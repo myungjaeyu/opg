@@ -1,13 +1,5 @@
-FROM node:lts-alpine
+FROM node:10-slim
 
-WORKDIR /app
+WORKDIR /usr/server
 
-ENV NODE_ENV development
-COPY package.json yarn.lock ./
-RUN yarn
-
-COPY . .
-
-EXPOSE 3000
-
-CMD [ "yarn", "start:dev" ]
+CMD yarn prestart:prod && yarn start:prod

@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  db:
+    image: mysql:5.7
+    ports: 
+      - "3306"
+    environment:
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: test
+
+  api:
+    build: ./api
+    volumes:
+      - ./api:/usr/server
+    expose:
+      - "3000"      
+    links:
+      - db
+    environment:
+      VIRTUAL_HOST: api.testdomain.local
+
+  client:
+    build: ./client
+    volumes:
+      - ./client:/usr/share/nginx/html
+    expose:
+      - "3001"      
+    environment:
+      VIRTUAL_HOST: testdomain.local
